@@ -1,0 +1,36 @@
+# Backend
+backend/target/
+backend/.mvn/
+backend/*.iml
+backend/.idea/
+backend/.project
+backend/.classpath
+
+# Mobile Flutter
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/build/
+mobile/.packages
+mobile/.pub-cache/
+mobile/.pub/
+mobile/*.iml
+mobile/android/.gradle
+mobile/android/local.properties
+mobile/android/app/release/
+
+# AI Service
+ai-service/__pycache__/
+ai-service/venv/
+ai-service/.venv/
+ai-service/*.pyc
+
+# Admin Dashboard
+admin-dashboard/node_modules/
+admin-dashboard/dist/
+admin-dashboard/.env.local
+
+# General
+.DS_Store
+Thumbs.db
+*.log
