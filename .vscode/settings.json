@@ -1,0 +1,18 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.maven.enabled": true,
+    "java.autobuild.enabled": true,
+    "java.project.importHint": "backend",
+    "python.defaultInterpreterPath": "C:\\Users\\EX BOOK\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/ai-service"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
+    }
+}
