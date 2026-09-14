@@ -9,6 +9,13 @@
         "target"
     ],
     "python.defaultInterpreterPath": "C:\\Users\\EX BOOK\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingModuleSource": "none",
+        "reportUndefinedVariable": "none"
+    },
     "python.analysis.extraPaths": [
         "${workspaceFolder}/ai-service"
     ],
