@@ -3,6 +3,11 @@
     "java.import.maven.enabled": true,
     "java.autobuild.enabled": true,
     "java.project.importHint": "backend",
+    "java.project.resourceFilters": [
+        "node_modules",
+        "\\.git",
+        "target"
+    ],
     "python.defaultInterpreterPath": "C:\\Users\\EX BOOK\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
     "python.analysis.extraPaths": [
         "${workspaceFolder}/ai-service"
@@ -13,6 +18,14 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true
+        "**/Thumbs.db": true,
+        "**/target/**": true,
+        "**/build/**": true,
+        "**/.dart_tool/**": true
+    },
+    "search.exclude": {
+        "**/target": true,
+        "**/build": true,
+        "**/node_modules": true
     }
 }
