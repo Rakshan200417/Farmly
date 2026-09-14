@@ -294,7 +294,7 @@ class _DiagnosisResultScreenState extends State<DiagnosisResultScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: FarmlyColors.leafGreen.withOpacity(0.5)),
+                border: Border.all(color: FarmlyColors.leafGreen.withValues(alpha: 0.5)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

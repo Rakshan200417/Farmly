@@ -103,7 +103,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
+                                color: Colors.white.withValues(alpha: 0.5),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -112,7 +112,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
+                                color: Colors.white.withValues(alpha: 0.5),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -333,7 +333,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.92),
+                                color: Colors.white.withValues(alpha: 0.92),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: FarmlyColors.border),
                               ),

@@ -176,7 +176,7 @@ class FarmerHomeScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: FarmlyColors.warmAmber.withOpacity(0.25),
+                                color: FarmlyColors.warmAmber.withValues(alpha: 0.25),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -189,7 +189,7 @@ class FarmerHomeScreen extends StatelessWidget {
                                 width: 48,
                                 height: 48,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.35),
+                                  color: Colors.white.withValues(alpha: 0.35),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -212,7 +212,7 @@ class FarmerHomeScreen extends StatelessWidget {
                                 loc.tr('scan_crop_desc'),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: FarmlyColors.textPrimary.withOpacity(0.85),
+                                  color: FarmlyColors.textPrimary.withValues(alpha: 0.85),
                                   height: 1.3,
                                 ),
                               ),
@@ -313,7 +313,7 @@ class FarmerHomeScreen extends StatelessWidget {
                           width: 46,
                           height: 46,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
+                            color: Colors.white.withValues(alpha: 0.15),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -340,7 +340,7 @@ class FarmerHomeScreen extends StatelessWidget {
                                 'Ask in Sinhala, Tamil, or English',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.white.withOpacity(0.85),
+                                  color: Colors.white.withValues(alpha: 0.85),
                                 ),
                               ),
                             ],

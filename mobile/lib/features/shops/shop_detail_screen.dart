@@ -140,7 +140,7 @@ class ShopDetailScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: FarmlyColors.lightGreenOverlay,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: FarmlyColors.leafGreen.withOpacity(0.4)),
+                            border: Border.all(color: FarmlyColors.leafGreen.withValues(alpha: 0.4)),
                           ),
                           child: const Row(
                             children: [

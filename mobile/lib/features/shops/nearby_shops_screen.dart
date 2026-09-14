@@ -132,7 +132,7 @@ class _NearbyShopsScreenState extends State<NearbyShopsScreen> {
           color: isActive ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           boxShadow: isActive
-              ? [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 4, offset: const Offset(0, 2))]
               : null,
         ),
         child: Row(
@@ -163,7 +163,7 @@ class _NearbyShopsScreenState extends State<NearbyShopsScreen> {
           child: Image.network(
             'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1000',
             fit: BoxFit.cover,
-            color: Colors.white.withOpacity(0.9),
+            color: Colors.white.withValues(alpha: 0.9),
             colorBlendMode: BlendMode.screen,
           ),
         ),
@@ -199,7 +199,7 @@ class _NearbyShopsScreenState extends State<NearbyShopsScreen> {
                 border: Border.all(color: FarmlyColors.border),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -326,7 +326,7 @@ class _NearbyShopsScreenState extends State<NearbyShopsScreen> {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: FarmlyColors.border),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 6),
               ],
             ),
             child: Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),

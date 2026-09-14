@@ -74,7 +74,7 @@ class _ProcessingDiagnosisScreenState extends State<ProcessingDiagnosisScreen> w
                     border: Border.all(color: FarmlyColors.leafGreen, width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: FarmlyColors.leafGreen.withOpacity(0.2),
+                        color: FarmlyColors.leafGreen.withValues(alpha: 0.2),
                         blurRadius: 24,
                         offset: const Offset(0, 8),
                       ),

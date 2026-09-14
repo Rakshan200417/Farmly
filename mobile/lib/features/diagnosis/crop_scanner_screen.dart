@@ -33,7 +33,7 @@ class _CropScannerScreenState extends State<CropScannerScreen> {
               child: Image.network(
                 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?w=800',
                 fit: BoxFit.cover,
-                color: Colors.black.withOpacity(0.45),
+                color: Colors.black.withValues(alpha: 0.45),
                 colorBlendMode: BlendMode.darken,
               ),
             ),

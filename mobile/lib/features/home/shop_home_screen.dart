@@ -131,7 +131,7 @@ class ShopHomeScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: FarmlyColors.alertRed.withOpacity(0.3)),
+                  border: Border.all(color: FarmlyColors.alertRed.withValues(alpha: 0.3)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

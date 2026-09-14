@@ -185,7 +185,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: FarmlyColors.warmAmber.withOpacity(0.35),
+              color: FarmlyColors.warmAmber.withValues(alpha: 0.35),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

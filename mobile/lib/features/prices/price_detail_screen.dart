@@ -235,7 +235,7 @@ class _PriceDetailScreenState extends State<PriceDetailScreen> {
                             dotData: const FlDotData(show: true),
                             belowBarData: BarAreaData(
                               show: true,
-                              color: (item.isPositive ? FarmlyColors.leafGreen : FarmlyColors.alertRed).withOpacity(0.12),
+                              color: (item.isPositive ? FarmlyColors.leafGreen : FarmlyColors.alertRed).withValues(alpha: 0.12),
                             ),
                           ),
                         ],

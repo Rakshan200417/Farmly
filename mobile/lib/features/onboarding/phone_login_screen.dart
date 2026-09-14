@@ -164,7 +164,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
           side: const BorderSide(color: FarmlyColors.border),
         ),
         leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.15),
+          backgroundColor: color.withValues(alpha: 0.15),
           child: Icon(icon, color: color, size: 22),
         ),
         title: Text(name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
@@ -225,7 +225,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                   border: Border.all(color: FarmlyColors.border, width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
+                      color: Colors.black.withValues(alpha: 0.02),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),

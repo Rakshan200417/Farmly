@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     border: Border.all(color: FarmlyColors.border, width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: FarmlyColors.leafGreen.withOpacity(0.12),
+                        color: FarmlyColors.leafGreen.withValues(alpha: 0.12),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
