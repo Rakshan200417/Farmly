@@ -19,8 +19,9 @@ public class AiAssistantController {
     public ResponseEntity<Map<String, String>> chatWithAssistant(@RequestBody Map<String, String> request) {
         String message = request.getOrDefault("message", "");
         String diseaseContext = request.get("diseaseContext");
+        String apiKey = request.get("apiKey");
 
-        String reply = geminiAiService.askAssistant(message, diseaseContext);
+        String reply = geminiAiService.askAssistant(message, diseaseContext, apiKey);
 
         return ResponseEntity.ok(Map.of("reply", reply));
     }

@@ -99,7 +99,7 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Farmly AI ("Govi Sahakaru")',
+                  'Farmly AI',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: FarmlyColors.textPrimary),
                 ),
                 Text(
@@ -119,7 +119,7 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
                 builder: (_) => AlertDialog(
                   title: const Text('About Farmly AI'),
                   content: const Text(
-                    'Farmly AI ("Govi Sahakaru") is powered by Google Gemini 1.5 Flash. It is specialized in Sri Lankan agricultural practices, Maha/Yala seasons, and Department of Agriculture recommendations.',
+                    'Farmly AI is powered by Google Gemini. It is specialized in Sri Lankan agricultural practices, Maha/Yala seasons, and Department of Agriculture recommendations.',
                   ),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),

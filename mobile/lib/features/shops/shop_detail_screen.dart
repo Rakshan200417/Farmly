@@ -197,7 +197,13 @@ class ShopDetailScreen extends StatelessWidget {
                         label: const Text('Chat', style: TextStyle(fontWeight: FontWeight.bold)),
                         onPressed: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => ChatDetailScreen(userName: shop.name)),
+                            MaterialPageRoute(
+                              builder: (_) => ChatDetailScreen(
+                                recipientId: shop.id,
+                                userName: shop.name,
+                                userPhone: shop.phone,
+                              ),
+                            ),
                           );
                         },
                       ),

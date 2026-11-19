@@ -20,11 +20,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill demo OTP 1 2 3 4 5 6 for smooth testing
-    const defaultOtp = '123456';
-    for (int i = 0; i < 6; i++) {
-      _controllers[i].text = defaultOtp[i];
-    }
+    // Removed demo OTP prefill
   }
 
   @override

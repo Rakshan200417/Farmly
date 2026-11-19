@@ -53,7 +53,12 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: Row(
                 children: [
-                  const Icon(Icons.eco, color: FarmlyColors.leafGreen, size: 28),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                  ),
                   const SizedBox(width: 8),
                   const Text(
                     'Farmly',
@@ -348,7 +353,11 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) => ChatDetailScreen(userName: item.farmerName),
+                                    builder: (_) => ChatDetailScreen(
+                                      recipientId: item.farmerId,
+                                      userName: item.farmerName,
+                                      userPhone: item.farmerPhone,
+                                    ),
                                   ),
                                 );
                               },

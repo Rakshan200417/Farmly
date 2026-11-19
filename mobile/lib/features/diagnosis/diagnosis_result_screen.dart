@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/models/farmly_models.dart';
 import '../../core/providers/farmly_providers.dart';
 import '../shops/nearby_shops_screen.dart';
 import '../ai_assistant/ai_assistant_screen.dart';
 
 class DiagnosisResultScreen extends StatefulWidget {
   final String cropName;
+  final DiagnosisModel? diagnosis;
 
-  const DiagnosisResultScreen({super.key, required this.cropName});
+  const DiagnosisResultScreen({super.key, required this.cropName, this.diagnosis});
 
   @override
   State<DiagnosisResultScreen> createState() => _DiagnosisResultScreenState();
@@ -31,21 +33,49 @@ class _DiagnosisResultScreenState extends State<DiagnosisResultScreen> {
     super.dispose();
   }
 
-  void _calculateDosage() {
+  void _calculateDosage() async {
     final amount = double.tryParse(_landController.text) ?? 1.0;
-    final result = context.read<FarmlyDataProvider>().calculateDosage(
+    final result = await context.read<FarmlyDataProvider>().calculateDosage(
       landAmount: amount,
       isAcres: _isAcres,
       perchGrams: 15.0, // standard rate
     );
-    setState(() {
-      _dosageCalculation = result;
-    });
+    if (mounted) {
+      setState(() {
+        _dosageCalculation = result;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final diagnosis = context.watch<FarmlyDataProvider>().sampleDiagnosis;
+    final provider = context.watch<FarmlyDataProvider>();
+    final diagnosis = widget.diagnosis ?? provider.currentDiagnosis ?? DiagnosisModel(
+      id: 'diag-01',
+      cropName: widget.cropName,
+      diseaseName: 'Bacterial Leaf Blight',
+      scientificName: 'Xanthomonas oryzae pv. oryzae',
+      severity: 'SEVERE',
+      confidencePercent: 88.0,
+      description: 'Identified based on water-soaked to yellowish stripes on leaf blades or starting at leaf tips with a wavy margin.',
+      warningBanner: 'High incidence of Blight reported in your agricultural zone.',
+      organicTreatments: [
+        TreatmentItem(
+          name: 'Neem Seed Kernel Extract (5%)',
+          instruction: '5ml per 1L water. Spray in early morning.',
+          dosagePerLiter: '5ml / Liter',
+          standardPerchDosageGrams: 15.0,
+        ),
+      ],
+      chemicalTreatments: [
+        TreatmentItem(
+          name: 'Copper Oxychloride 50 WP',
+          instruction: '2.5g per 1 Liter water. Avoid spraying right before rain.',
+          dosagePerLiter: '2.5g / Liter',
+          standardPerchDosageGrams: 15.0,
+        ),
+      ],
+    );
 
     return Scaffold(
       backgroundColor: FarmlyColors.background,

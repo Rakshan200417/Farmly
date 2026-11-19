@@ -49,6 +49,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- MySQL Driver (for XAMPP / MariaDB / MySQL) -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- H2 Database (for seamless offline dev/testing profile) -->
 		<dependency>
 			<groupId>com.h2database</groupId>

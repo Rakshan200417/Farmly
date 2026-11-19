@@ -385,7 +385,11 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => ChatDetailScreen(userName: item.farmerName),
+                              builder: (_) => ChatDetailScreen(
+                                recipientId: item.farmerId,
+                                userName: item.farmerName,
+                                userPhone: item.farmerPhone,
+                              ),
                             ),
                           );
                         },

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
@@ -5,7 +6,7 @@ import '../../core/providers/farmly_providers.dart';
 import '../../core/localization/app_localizations.dart';
 import '../shops/nearby_shops_screen.dart';
 import '../ai_assistant/ai_assistant_screen.dart';
-import '../onboarding/phone_login_screen.dart';
+import '../profile/profile_screen.dart';
 
 class FarmerHomeScreen extends StatelessWidget {
   final Function(int) onNavigateToTab;
@@ -26,26 +27,36 @@ class FarmerHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Bar: Farmly Brand, Notifications & Avatar
+              // Header Row: App Title + Icons
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.eco, color: FarmlyColors.leafGreen, size: 28),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Farmly',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: FarmlyColors.leafGreen,
-                      letterSpacing: -0.3,
-                    ),
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        width: 32,
+                        height: 32,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        loc.translate('app_name'),
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: FarmlyColors.deepTeal,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                    ],
                   ),
                   const Spacer(),
-                  // Notification Bell
+                  // Notifications Icon
                   Stack(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.notifications_none, color: FarmlyColors.textPrimary, size: 26),
+                        icon: const Icon(Icons.notifications_none_outlined, color: FarmlyColors.textPrimary, size: 26),
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Notifications: No new disease outbreak alerts.')),
@@ -66,10 +77,13 @@ class FarmerHomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // User Avatar
+                  // User Avatar -> Opens ProfileScreen
                   InkWell(
                     onTap: () {
-                      _showProfileModal(context, user?.name ?? 'Suneth', user?.role.name.toUpperCase() ?? 'FARMER');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
                     },
                     child: Container(
                       width: 36,
@@ -78,11 +92,27 @@ class FarmerHomeScreen extends StatelessWidget {
                         color: FarmlyColors.lightGreenOverlay,
                         shape: BoxShape.circle,
                         border: Border.all(color: FarmlyColors.leafGreen, width: 1.5),
-                        image: const DecorationImage(
-                          image: NetworkImage('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
-                          fit: BoxFit.cover,
-                        ),
+                        image: user?.profilePhoto != null && user!.profilePhoto!.isNotEmpty
+                            ? DecorationImage(
+                                image: MemoryImage(
+                                  base64Decode(user.profilePhoto!),
+                                ),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
+                      child: user?.profilePhoto == null || user!.profilePhoto!.isEmpty
+                          ? Center(
+                              child: Text(
+                                (user?.name.isNotEmpty == true) ? user!.name[0].toUpperCase() : 'U',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: FarmlyColors.leafGreen,
+                                ),
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                 ],
@@ -328,7 +358,7 @@ class FarmerHomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Farmly AI ("Govi Sahakaru")',
+                                'Farmly AI',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -463,71 +493,6 @@ class FarmerHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _showProfileModal(BuildContext context, String name, String role) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 36,
-                backgroundColor: FarmlyColors.lightGreenOverlay,
-                child: const Icon(Icons.person, size: 40, color: FarmlyColors.leafGreen),
-              ),
-              const SizedBox(height: 12),
-              Text(name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: FarmlyColors.lightGreenOverlay,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  role,
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: FarmlyColors.leafGreen),
-                ),
-              ),
-              const SizedBox(height: 24),
-              ListTile(
-                leading: const Icon(Icons.swap_horiz, color: FarmlyColors.deepTeal),
-                title: const Text('Switch Role / Demo Profile'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PhoneLoginScreen()),
-                    (route) => false,
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout, color: FarmlyColors.alertRed),
-                title: const Text('Logout', style: TextStyle(color: FarmlyColors.alertRed)),
-                onTap: () {
-                  context.read<AuthProvider>().logout();
-                  Navigator.pop(context);
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PhoneLoginScreen()),
-                    (route) => false,
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

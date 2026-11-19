@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/providers/farmly_providers.dart';
+import '../profile/profile_screen.dart';
 
 class ShopHomeScreen extends StatelessWidget {
   final Function(int) onNavigateToTab;
@@ -23,7 +24,12 @@ class ShopHomeScreen extends StatelessWidget {
               // Top Bar
               Row(
                 children: [
-                  const Icon(Icons.eco, color: FarmlyColors.leafGreen, size: 28),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                  ),
                   const SizedBox(width: 8),
                   const Text(
                     'Farmly',
@@ -39,15 +45,23 @@ class ShopHomeScreen extends StatelessWidget {
                     icon: const Icon(Icons.notifications_none, color: FarmlyColors.textPrimary, size: 26),
                     onPressed: () {},
                   ),
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: FarmlyColors.lightAmberOverlay,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: FarmlyColors.warmAmber, width: 1.5),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
+                    },
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: FarmlyColors.lightAmberOverlay,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: FarmlyColors.warmAmber, width: 1.5),
+                      ),
+                      child: const Icon(Icons.storefront, color: FarmlyColors.warmAmber, size: 20),
                     ),
-                    child: const Icon(Icons.storefront, color: FarmlyColors.warmAmber, size: 20),
                   ),
                 ],
               ),

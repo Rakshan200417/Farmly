@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/providers/farmly_providers.dart';
 import 'diagnosis_result_screen.dart';
 
 class ProcessingDiagnosisScreen extends StatefulWidget {
@@ -14,7 +16,7 @@ class ProcessingDiagnosisScreen extends StatefulWidget {
 class _ProcessingDiagnosisScreenState extends State<ProcessingDiagnosisScreen> with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _animation;
-  String _statusText = 'Running on-device TensorFlow Lite model...';
+  String _statusText = 'Contacting Farmly Pathology AI...';
 
   @override
   void initState() {
@@ -28,23 +30,27 @@ class _ProcessingDiagnosisScreenState extends State<ProcessingDiagnosisScreen> w
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) {
-        setState(() {
-          _statusText = 'Evaluating symptoms & disease patterns...';
-        });
-      }
-    });
+    _runDiagnosis();
+  }
 
-    Future.delayed(const Duration(milliseconds: 2400), () {
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => DiagnosisResultScreen(cropName: widget.cropName),
-          ),
-        );
-      }
-    });
+  Future<void> _runDiagnosis() async {
+    final provider = context.read<FarmlyDataProvider>();
+    await Future.delayed(const Duration(milliseconds: 800));
+    if (!mounted) return;
+    setState(() => _statusText = 'Querying Sri Lankan pathology database...');
+
+    final diag = await provider.diagnoseCrop(widget.cropName);
+
+    await Future.delayed(const Duration(milliseconds: 600));
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => DiagnosisResultScreen(
+          cropName: widget.cropName,
+          diagnosis: diag,
+        ),
+      ),
+    );
   }
 
   @override

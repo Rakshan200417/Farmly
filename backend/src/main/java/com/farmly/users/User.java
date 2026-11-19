@@ -14,20 +14,24 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
     private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role;
+    private UserRole role = UserRole.FARMER;
 
     private String district;
 
     private String locationName;
 
-    private Double latitude;
+    private Double latitude = 8.3114;
 
-    private Double longitude;
+    private Double longitude = 80.4037;
 
     private Double rating = 4.8;
 
@@ -36,6 +40,9 @@ public class User {
     private Boolean isVerified = true;
 
     private Boolean isDemoUser = false;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String profilePicture;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -51,11 +58,26 @@ public class User {
         this.longitude = longitude;
     }
 
+    public User(String name, String email, String password, UserRole role, String district) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.district = district;
+        this.locationName = district != null ? district + ", Sri Lanka" : "Sri Lanka";
+    }
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
@@ -89,4 +111,7 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
 }

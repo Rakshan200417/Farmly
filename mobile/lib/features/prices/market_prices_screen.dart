@@ -38,7 +38,12 @@ class _MarketPricesScreenState extends State<MarketPricesScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
               child: Row(
                 children: [
-                  const Icon(Icons.eco, color: FarmlyColors.leafGreen, size: 28),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                  ),
                   const SizedBox(width: 8),
                   const Text(
                     'Farmly',

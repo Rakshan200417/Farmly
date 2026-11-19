@@ -18,9 +18,13 @@ public class DiagnosisController {
 
     @PostMapping("/scan")
     public ResponseEntity<?> diagnoseCrop(@RequestBody Map<String, String> request) {
-        String cropName = request.getOrDefault("cropName", "Paddy (Rice)");
+        String cropName = request.getOrDefault("cropName", "Paddy (Rice)").trim();
 
-        DiseaseTreatmentMapping diagnosis = diseaseRepository.findByCropNameIgnoreCase(cropName)
+        DiseaseTreatmentMapping diagnosis = diseaseRepository.findAll().stream()
+                .filter(d -> d.getCropName().equalsIgnoreCase(cropName) ||
+                             cropName.toLowerCase().contains(d.getCropName().toLowerCase()) ||
+                             d.getCropName().toLowerCase().contains(cropName.toLowerCase().split(" ")[0]))
+                .findFirst()
                 .orElseGet(() -> diseaseRepository.findAll().stream().findFirst().orElse(null));
 
         if (diagnosis == null) {

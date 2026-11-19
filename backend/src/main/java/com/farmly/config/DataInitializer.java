@@ -45,13 +45,25 @@ public class DataInitializer implements CommandLineRunner {
 
         // 1. Seed Demo Personas (for Viva / Grading)
         User suneth = new User("Suneth Perera", "+94 77 123 4567", UserRole.FARMER, "Anuradhapura", "Thirappane, Anuradhapura", 8.3114, 80.4037);
+        suneth.setEmail("farmer@farmly.lk");
+        suneth.setPassword("password123");
         suneth.setIsDemoUser(true);
+
         User priyashantha = new User("Priyashantha Wholesale", "+94 71 987 6543", UserRole.BUYER, "Colombo", "Pettah Wholesale Market, Colombo", 6.9360, 79.8530);
+        priyashantha.setEmail("buyer@farmly.lk");
+        priyashantha.setPassword("password123");
         priyashantha.setIsDemoUser(true);
+
         User pereraShop = new User("Perera Agri Inputs & Seeds", "+94 76 555 1234", UserRole.SHOP, "Matale", "Dambulla Road, Dambulla", 7.8731, 80.6511);
+        pereraShop.setEmail("shop@farmly.lk");
+        pereraShop.setPassword("password123");
         pereraShop.setIsDemoUser(true);
+
         User admin = new User("Platform Admin", "+94 70 000 0000", UserRole.ADMIN, "Colombo", "Headquarters, Colombo", 6.9271, 79.8612);
+        admin.setEmail("admin.platform@farmly.lk");
+        admin.setPassword("password123");
         admin.setIsDemoUser(true);
+
         userRepository.saveAll(List.of(suneth, priyashantha, pereraShop, admin));
 
         // 2. Seed Live Market Prices (HARTI Sri Lanka)

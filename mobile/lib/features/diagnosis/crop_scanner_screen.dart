@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../core/theme/app_theme.dart';
 import 'processing_diagnosis_screen.dart';
 
@@ -12,6 +13,7 @@ class CropScannerScreen extends StatefulWidget {
 class _CropScannerScreenState extends State<CropScannerScreen> {
   String _selectedCrop = 'Paddy (Rice)';
   final List<String> _crops = ['Paddy (Rice)', 'Tomato', 'Green Chili', 'Big Onion', 'Potato'];
+  final ImagePicker _picker = ImagePicker();
 
   void _capturePhoto() {
     Navigator.of(context).push(
@@ -19,6 +21,23 @@ class _CropScannerScreenState extends State<CropScannerScreen> {
         builder: (_) => ProcessingDiagnosisScreen(cropName: _selectedCrop),
       ),
     );
+  }
+
+  Future<void> _pickGalleryPhoto() async {
+    try {
+      final photo = await _picker.pickImage(source: ImageSource.gallery);
+      if (photo != null && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProcessingDiagnosisScreen(cropName: _selectedCrop),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        _capturePhoto();
+      }
+    }
   }
 
   @override
@@ -167,7 +186,7 @@ class _CropScannerScreenState extends State<CropScannerScreen> {
                   // Gallery Pick
                   IconButton(
                     icon: const Icon(Icons.photo_library_outlined, color: Colors.white, size: 30),
-                    onPressed: _capturePhoto,
+                    onPressed: _pickGalleryPhoto,
                   ),
 
                   // Big Center Shutter Button

@@ -58,29 +58,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Leaf Logo Icon
-                Container(
+                // Brand Logo
+                Image.asset(
+                  'assets/images/logo.png',
                   width: 96,
                   height: 96,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: FarmlyColors.border, width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: FarmlyColors.leafGreen.withValues(alpha: 0.12),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.eco,
-                      size: 54,
-                      color: FarmlyColors.leafGreen,
-                    ),
-                  ),
+                  fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 20),
                 const Text(

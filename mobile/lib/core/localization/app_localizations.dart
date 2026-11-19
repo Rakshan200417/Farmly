@@ -35,7 +35,7 @@ class AppLocalizations {
       'nearby_shops': 'Nearby shops',
       'find_treatment_nearby': 'Find treatment nearby',
       'ask_ai_assistant': 'Ask Farmly AI',
-      'ai_assistant_title': 'Farmly AI ("Govi Sahakaru")',
+      'ai_assistant_title': 'Farmly AI',
       'ai_assistant_subtitle': 'Your 24/7 Smart Agronomist & Farming Advisor',
       'ai_placeholder': 'Ask in English, Sinhala, or Tamil...',
       'recommended_treatments': 'Recommended Treatments',
@@ -87,8 +87,8 @@ class AppLocalizations {
       'manage_produce': 'ඔබගේ නිෂ්පාදන කළමනාකරණය කරන්න',
       'nearby_shops': 'ළඟම ඇති වෙළඳසැල්',
       'find_treatment_nearby': 'ප්‍රතිකාර ද්‍රව්‍ය ළඟම කඩෙන් සොයන්න',
-      'ask_ai_assistant': 'ගොවි සහකරු AI විමසන්න',
-      'ai_assistant_title': 'Farmly AI ("ගොවි සහකරු")',
+      'ask_ai_assistant': 'Farmly AI විමසන්න',
+      'ai_assistant_title': 'Farmly AI',
       'ai_assistant_subtitle': 'ඔබගේ ස්මාර්ට් කෘෂිකාර්මික උපදේශකයා',
       'ai_placeholder': 'සිංහල, දෙමළ හෝ ඉංග්‍රීසියෙන් විමසන්න...',
       'recommended_treatments': 'නිර්දේශිත ප්‍රතිකාර',
@@ -141,7 +141,7 @@ class AppLocalizations {
       'nearby_shops': 'அருகிலுள்ள கடைகள்',
       'find_treatment_nearby': 'அருகிலுள்ள மருந்துகளைக் கண்டறியவும்',
       'ask_ai_assistant': 'Farmly AI இடம் கேளுங்கள்',
-      'ai_assistant_title': 'Farmly AI ("விவசாய ஆலோசகர்")',
+      'ai_assistant_title': 'Farmly AI',
       'ai_assistant_subtitle': 'உங்கள் 24/7 அறிவார்ந்த விவசாய வழிகாட்டி',
       'ai_placeholder': 'தமிழ், சிங்களம் அல்லது ஆங்கிலத்தில் கேளுங்கள்...',
       'recommended_treatments': 'பரிந்துரைக்கப்பட்ட சிகிச்சைகள்',
@@ -170,4 +170,6 @@ class AppLocalizations {
         _localizedValues['en']?[key] ??
         key;
   }
+
+  String translate(String key) => tr(key);
 }

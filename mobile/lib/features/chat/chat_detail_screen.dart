@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/models/farmly_models.dart';
+import '../../core/providers/farmly_providers.dart';
+import '../../core/services/api_service.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String userName;
+  final String? recipientId;
   final String userPhone;
 
   const ChatDetailScreen({
     super.key,
     required this.userName,
+    this.recipientId,
     this.userPhone = '+94771234567',
   });
 
@@ -18,33 +24,54 @@ class ChatDetailScreen extends StatefulWidget {
 
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final TextEditingController _msgController = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [
-    {
-      'text': 'Hello! Are your organic carrots still available for wholesale purchase?',
-      'isMe': true,
-      'time': '10:32 AM',
-    },
-    {
-      'text': 'Yes, we have 500 kg freshly harvested in Nuwara Eliya. We can arrange transport or farm pickup.',
-      'isMe': false,
-      'time': '10:35 AM',
-    },
-    {
-      'text': 'Great, what would be the best wholesale rate for the full 500kg lot?',
-      'isMe': true,
-      'time': '10:40 AM',
-    },
-    {
-      'text': 'For the entire 500kg lot, we can do Rs. 420 per kg. Washed and packed in 25kg gunny sacks.',
-      'isMe': false,
-      'time': '10:45 AM',
-    },
-  ];
+  final ScrollController _scrollController = ScrollController();
+  List<ChatMessageModel> _messages = [];
+  bool _isLoading = true;
+
+  String get _effectiveRecipientId {
+    if (widget.recipientId != null && widget.recipientId!.isNotEmpty) {
+      return widget.recipientId!;
+    }
+    return widget.userName.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
 
   @override
   void dispose() {
     _msgController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadHistory() async {
+    final currentUser = context.read<AuthProvider>().currentUser;
+    final currentUserId = currentUser?.id ?? 'guest_user';
+
+    final history = await ApiService.getChatHistory(currentUserId, _effectiveRecipientId);
+    if (mounted) {
+      setState(() {
+        _messages = history;
+        _isLoading = false;
+      });
+      _scrollToBottom();
+    }
+  }
+
+  void _scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 150), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   void _call() async {
@@ -58,22 +85,54 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     final text = _msgController.text.trim();
     if (text.isEmpty) return;
 
+    final currentUser = context.read<AuthProvider>().currentUser;
+    final senderId = currentUser?.id ?? 'usr-${DateTime.now().millisecondsSinceEpoch}';
+    final senderName = currentUser?.name ?? 'Farmer';
+
+    _msgController.clear();
+
+    // Optimistically add to list
+    final tempMsg = ChatMessageModel(
+      id: DateTime.now().millisecondsSinceEpoch,
+      senderId: senderId,
+      senderName: senderName,
+      recipientId: _effectiveRecipientId,
+      recipientName: widget.userName,
+      content: text,
+      createdAt: DateTime.now(),
+    );
+
     setState(() {
-      _messages.add({
-        'text': text,
-        'isMe': true,
-        'time': 'Now',
-      });
-      _msgController.clear();
+      _messages.add(tempMsg);
     });
+    _scrollToBottom();
+
+    // Send to MySQL backend
+    final saved = await ApiService.sendChatMessage(
+      senderId: senderId,
+      senderName: senderName,
+      recipientId: _effectiveRecipientId,
+      recipientName: widget.userName,
+      content: text,
+    );
+
+    if (saved != null && mounted) {
+      setState(() {
+        _messages.removeLast();
+        _messages.add(saved);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.watch<AuthProvider>().currentUser;
+    final currentUserId = currentUser?.id ?? '';
+
     return Scaffold(
       backgroundColor: FarmlyColors.background,
       appBar: AppBar(
@@ -98,10 +157,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   Text(
                     widget.userName,
                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: FarmlyColors.textPrimary),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const Text(
-                    'Online • Sri Lanka',
-                    style: TextStyle(fontSize: 11, color: FarmlyColors.leafGreen),
+                    'Online • Sri Lanka Market',
+                    style: TextStyle(fontSize: 11, color: FarmlyColors.leafGreen, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -109,72 +169,106 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           ],
         ),
         actions: [
-          // Pinned WhatsApp shortcut in header
           IconButton(
             icon: const Icon(Icons.phone_android, color: Color(0xFF25D366)),
             onPressed: _openWhatsApp,
+            tooltip: 'WhatsApp',
           ),
-          // Pinned Phone call shortcut in header
           IconButton(
             icon: const Icon(Icons.phone, color: FarmlyColors.leafGreen),
             onPressed: _call,
+            tooltip: 'Call Phone',
           ),
         ],
       ),
       body: Column(
         children: [
+          // Live Chat Messages
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final m = _messages[index];
-                final isMe = m['isMe'] as bool;
-
-                return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: isMe ? FarmlyColors.deepTeal : Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(14),
-                        topRight: const Radius.circular(14),
-                        bottomLeft: Radius.circular(isMe ? 14 : 2),
-                        bottomRight: Radius.circular(isMe ? 2 : 14),
-                      ),
-                      border: isMe ? null : Border.all(color: FarmlyColors.border),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          m['text'] as String,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isMe ? Colors.white : FarmlyColors.textPrimary,
-                            height: 1.35,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text(
-                            m['time'] as String,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: isMe ? Colors.white70 : FarmlyColors.textSecondary,
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator(color: FarmlyColors.leafGreen))
+                : _messages.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.chat_bubble_outline, size: 48, color: FarmlyColors.textSecondary.withOpacity(0.5)),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Start conversation with ${widget.userName}',
+                              style: const TextStyle(color: FarmlyColors.textSecondary, fontSize: 14),
                             ),
-                          ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Real-time messages are stored securely in MySQL',
+                              style: TextStyle(color: FarmlyColors.textSecondary, fontSize: 11),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      )
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          final m = _messages[index];
+                          final isMe = m.senderId == currentUserId ||
+                              (currentUserId.isEmpty && m.senderName == (currentUser?.name ?? 'Farmer'));
+
+                          final timeStr =
+                              '${m.createdAt.hour.toString().padLeft(2, '0')}:${m.createdAt.minute.toString().padLeft(2, '0')}';
+
+                          return Align(
+                            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: isMe ? FarmlyColors.deepTeal : Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(14),
+                                  topRight: const Radius.circular(14),
+                                  bottomLeft: Radius.circular(isMe ? 14 : 2),
+                                  bottomRight: Radius.circular(isMe ? 2 : 14),
+                                ),
+                                border: isMe ? null : Border.all(color: FarmlyColors.border),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.02),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    m.content,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: isMe ? Colors.white : FarmlyColors.textPrimary,
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      timeStr,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: isMe ? Colors.white70 : FarmlyColors.textSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
           ),
 
           // Message Input Bar
@@ -184,10 +278,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             child: SafeArea(
               child: Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.photo_camera_outlined, color: FarmlyColors.textSecondary),
-                    onPressed: () {},
-                  ),
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -212,11 +302,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   const SizedBox(width: 8),
                   Container(
                     decoration: const BoxDecoration(
-                      color: FarmlyColors.warmAmber,
+                      color: FarmlyColors.leafGreen,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.send, color: FarmlyColors.textPrimary, size: 20),
+                      icon: const Icon(Icons.send, color: Colors.white, size: 20),
                       onPressed: _sendMessage,
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/providers/farmly_providers.dart';
 import '../marketplace/listing_detail_screen.dart';
+import '../profile/profile_screen.dart';
 
 class BuyerHomeScreen extends StatelessWidget {
   final Function(int) onNavigateToTab;
@@ -22,10 +23,15 @@ class BuyerHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Bar
+              // Top Bar: Farmly Brand, Notifications & Avatar
               Row(
                 children: [
-                  const Icon(Icons.eco, color: FarmlyColors.leafGreen, size: 28),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                  ),
                   const SizedBox(width: 8),
                   const Text(
                     'Farmly',
@@ -41,16 +47,24 @@ class BuyerHomeScreen extends StatelessWidget {
                     icon: const Icon(Icons.notifications_none, color: FarmlyColors.textPrimary, size: 26),
                     onPressed: () {},
                   ),
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: FarmlyColors.lightTealOverlay,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: FarmlyColors.deepTeal, width: 1.5),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'),
-                        fit: BoxFit.cover,
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
+                    },
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: FarmlyColors.lightTealOverlay,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: FarmlyColors.deepTeal, width: 1.5),
+                        image: const DecorationImage(
+                          image: NetworkImage('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

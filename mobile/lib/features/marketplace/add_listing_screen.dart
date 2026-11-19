@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/models/farmly_models.dart';
+import '../../core/providers/farmly_providers.dart';
 
 class AddListingScreen extends StatefulWidget {
   const AddListingScreen({super.key});
@@ -12,6 +15,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
   String _selectedCrop = 'Paddy (Rice)';
   String _selectedUnit = '50kg Bags';
   String _selectedGrade = 'Grade A (Premium)';
+  bool _isPublishing = false;
 
   final TextEditingController _varietyController = TextEditingController(text: 'Samba Variety');
   final TextEditingController _qtyController = TextEditingController(text: '50');
@@ -37,14 +41,55 @@ class _AddListingScreenState extends State<AddListingScreen> {
     super.dispose();
   }
 
-  void _publishListing() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Produce listing published successfully to Farmly Marketplace!'),
-        backgroundColor: FarmlyColors.leafGreen,
-      ),
+  Future<void> _publishListing() async {
+    final user = context.read<AuthProvider>().currentUser;
+    final farmerName = user?.name ?? 'Farmer';
+    final farmerPhone = user?.phone ?? '+94 77 123 4567';
+    final price = double.tryParse(_priceController.text) ?? 100.0;
+    final qty = double.tryParse(_qtyController.text) ?? 10.0;
+
+    setState(() => _isPublishing = true);
+
+    String category = 'Vegetables';
+    if (_selectedCrop.contains('Paddy') || _selectedCrop.contains('Rice')) category = 'Grains';
+    if (_selectedCrop.contains('Chili')) category = 'Spices';
+
+    final newListing = ProduceListingModel(
+      id: '',
+      cropName: _selectedCrop,
+      variety: _varietyController.text.trim().isEmpty ? 'Standard' : _varietyController.text.trim(),
+      category: category,
+      pricePerKg: price,
+      availableQty: qty,
+      minOrderQty: 1.0,
+      unit: _selectedUnit.contains('Bag') ? 'bag' : 'kg',
+      qualityGrade: _selectedGrade,
+      harvestDate: 'Today',
+      location: _locationController.text.trim().isEmpty ? 'Sri Lanka' : _locationController.text.trim(),
+      distanceKm: 5.0,
+      farmerName: farmerName,
+      farmerRating: user?.rating ?? 4.8,
+      farmerReviewCount: user?.reviewsCount ?? 15,
+      isFarmerVerified: true,
+      farmerPhone: farmerPhone,
+      imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600',
+      description: 'Fresh $_selectedCrop harvested directly from $farmerName field in ${_locationController.text}.',
     );
-    Navigator.pop(context);
+
+    final success = await context.read<FarmlyDataProvider>().addListing(newListing);
+
+    if (!mounted) return;
+    setState(() => _isPublishing = false);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Produce listing published successfully to Farmly Marketplace & saved to database!'),
+          backgroundColor: FarmlyColors.leafGreen,
+        ),
+      );
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -237,11 +282,17 @@ class _AddListingScreenState extends State<AddListingScreen> {
                   foregroundColor: FarmlyColors.textPrimary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                onPressed: _publishListing,
-                child: const Text(
-                  'Publish Listing',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                onPressed: _isPublishing ? null : _publishListing,
+                child: _isPublishing
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2.5, color: FarmlyColors.textPrimary),
+                      )
+                    : const Text(
+                        'Publish Listing',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
               ),
             ),
             const SizedBox(height: 24),

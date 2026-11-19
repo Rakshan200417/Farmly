@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/theme/app_theme.dart';
 import '../../core/providers/farmly_providers.dart';
-import 'phone_login_screen.dart';
+import '../../core/utils/localization.dart';
+import 'auth_screen.dart';
 
 class LanguageSelectionScreen extends StatelessWidget {
   const LanguageSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final langCode = context.watch<LanguageProvider>().currentLanguage;
     return Scaffold(
       backgroundColor: FarmlyColors.background,
       body: SafeArea(
@@ -18,50 +21,32 @@ class LanguageSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 30),
-              // Leaf Icon
-              Container(
+              // Farmly Logo
+              Image.asset(
+                'assets/images/logo.png',
                 width: 64,
                 height: 64,
-                decoration: const BoxDecoration(
-                  color: FarmlyColors.lightGreenOverlay,
-                  shape: BoxShape.circle,
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.eco,
-                    size: 38,
-                    color: FarmlyColors.leafGreen,
-                  ),
-                ),
+                fit: BoxFit.contain,
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Choose Language',
-                style: TextStyle(
+              Text(
+                AppLocalizations.translate(langCode, 'chooseLanguage'),
+                style: const TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: FarmlyColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Select your preferred language to continue',
+              Text(
+                AppLocalizations.translate(langCode, 'selectPreferred'),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: FarmlyColors.textSecondary,
                 ),
               ),
               const SizedBox(height: 48),
-
-              // Language Option: Sinhala
-              _buildLanguageCard(
-                context: context,
-                code: 'si',
-                title: 'සිංහල',
-                subtitle: 'Sinhala',
-              ),
-              const SizedBox(height: 16),
 
               // Language Option: Tamil
               _buildLanguageCard(
@@ -78,6 +63,14 @@ class LanguageSelectionScreen extends StatelessWidget {
                 code: 'en',
                 title: 'English',
                 subtitle: 'English',
+              ),
+              const SizedBox(height: 16),
+              // Language Option: Sinhala
+              _buildLanguageCard(
+                context: context,
+                code: 'si',
+                title: 'සිංහල',
+                subtitle: 'Sinhala',
               ),
             ],
           ),
@@ -101,9 +94,8 @@ class LanguageSelectionScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           onTap: () {
             context.read<LanguageProvider>().setLanguage(code);
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const PhoneLoginScreen()),
-            );
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const AuthScreen()));
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 20),
